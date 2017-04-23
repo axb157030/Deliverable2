@@ -142,6 +142,7 @@ int main(int argc, char *argv[])
     	char toEcho_s[1024];
  	struct sockaddr_in server, from;
     	struct hostent *hp;
+	char wasRecvdFrom[] = " was received from ";
    
 	// create a pipe for executing the command to receive the ip address
     	int ip_pipe[2];
