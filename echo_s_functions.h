@@ -1,5 +1,5 @@
-// server_functions.h
-// contains the declarations of the functions used in the server.c file
+// echo_s_functions.h
+// contains the declarations of the functions used in the echo_s.c file
 
 #include <sys/types.h>
 #include <sys/socket.h>
