@@ -30,16 +30,9 @@ int main(int argc, char *argv[])
      }
 	
      // make sockets for TCP client, UDP client, and the log server; print an error if it fails
-     sockfd = socket(AF_INET, SOCK_STREAM, 0);
-     sock = socket(AF_INET, SOCK_DGRAM, 0);
-     sockfd_log = socket(AF_INET, SOCK_DGRAM, 0);
-
-     if (sockfd < 0) 
-        error("ERROR opening socket");
-     if (sock < 0)
-        error("ERROR opening socket");
-     if (sockfd_log < 0)
-        error("ERROR opening socket at port 9999");
+     sockfd = makeSocket(SOCK_STREAM);
+     sock = makeSocket(SOCK_DGRAM);
+     sockfd_log = makeSocket(SOCK_DGRAM);
 
      // bind the TCP socket and output an error if it fails
      bzero((char *) &serv_addr, sizeof(serv_addr));
