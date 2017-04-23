@@ -1,5 +1,5 @@
-// server_functions.c
-// contains the common functions used in the server.c file
+// echo_s_functions.c
+// contains the common functions used in the echo_s.c file
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <sys/wait.h>
 
-//prints an error message
+// prints an error message
 void error(const char *msg)
 {
     perror(msg);
