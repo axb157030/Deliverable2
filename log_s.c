@@ -1,5 +1,7 @@
 // a server in the internet domain
 #include <stdio.h>
+#include <conio.h>
+#inlcude <time.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -20,6 +22,7 @@ int main(int argc, char *argv[])
      struct hostent *hp;
      char buf[1024];
      fd_set readfds;
+     struct date d;
 
      if (argc < 2) {
         fprintf(stderr, "ERROR: provide a hostname port");
@@ -45,7 +48,30 @@ bcopy((char *)hp->h_addr,
          //UDP
          n = recvfrom(sock,buf,1024,0,(struct sockaddr *)&from, &length);
          if (n < 0) error("ERROR receiving from");
+	     
 	 //WRITE BUF CONTENTS TO echo.log HERE//
+	 /*
+	 if (file = fopen("echo.log", "r")){  
+		FILE *fPointer;
+		fPointer = fopen("echo.log", "a");
+		fprintf(fPointer, "\n"); 
+	 }
+	     
+	 else{
+		FILE *fPointer;
+		fPointer = fopen("echo.log", "w"); 
+	 }
+	 
+	 struct tm *local, *gm;
+	 time_t t;
+	 
+	 t = time(NULL);
+	 local = localtime(&t);
+	 fprintf(fPointer, "%d-%d-%d %d:%d:%d\t", local->tm_year + 1900, local->tm_mon + 1, local->tm_mday, 
+		 				local->tm_hour, local->tm_min, local->tm_sec);
+	 getch();
+	 fclose(fPointer);
+	 */
      }
      // close all sockets
      close(sock);
