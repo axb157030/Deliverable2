@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
    	         // send toLog_s to the log server
    	         n = sendto(sockfd_log, toLog_s, strlen(toLog_s), 0, (struct sockaddr *)&from, fromlen);
 		 if (n < 0){
-                     error("ERROR writing to socket");
+                     error("ERROR writing to socket LOG");
    	   	 }
 
    	         // exit the child process
@@ -177,14 +177,15 @@ int main(int argc, char *argv[])
 	
     // the parent will respond to the UDP connections
     else {
-	    int childpid_date, index, i;
-    	     char date_buf[256];
-    	     char fromEcho_c[256];
-    	     char toLog_s[1024];
+    		 int childpid_date, index, i;
+    		 char date_buf[256];
+    		 char fromEcho_c[256];
+    		 char toLog_s[1024];
 	 // create an infinite loop for continuity
          while (1) {
 	     // receive the input from the client and output an error if it fails
-             n = recvfrom(sock,fromEcho_c,strlen(fromEcho_c),0,(struct sockaddr *)&from,&fromlen);
+   		 bzero(fromEcho_c,256);
+             n = recvfrom(sock,fromEcho_c,256,0,(struct sockaddr *)&from,&fromlen);
              if (n < 0) error("ERROR receiving from");
 		 
 	     // fork a child and output an error if it fails
@@ -194,6 +195,7 @@ int main(int argc, char *argv[])
 		 
 	     // the child will respond to the client and act accordingly
              if (pid == 0)  {
+
 		 // create a pipe for executing the pipe command
     		 int date_pipe[2];
     		 pipe(date_pipe);
@@ -227,8 +229,7 @@ int main(int argc, char *argv[])
    		 close(date_pipe[0]); close(date_pipe[1]);
            
            // display the message sent from the client to the stdout
-             write(1,"Received a datagram: ",21);
-             write(1,fromEcho_c,n);
+           printf("Here is the message: %s\n",fromEcho_c);
 
 	   // reply to the client, output an error if it fails
 	   n = sendto(sock,"Got your message\n",17, 0,(struct sockaddr *)&from,fromlen);
@@ -252,7 +253,7 @@ int main(int argc, char *argv[])
    	         // send toLog_s to the log server
    	         n = sendto(sockfd_log, toLog_s, strlen(toLog_s), 0, (struct sockaddr *)&from, fromlen);
 		 if (n < 0)
-                     error("ERROR writing to socket");
+                     error("ERROR writing to socket LOG");
 
    	         // exit the child process
    	         exit(0);
