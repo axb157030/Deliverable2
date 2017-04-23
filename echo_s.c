@@ -22,9 +22,7 @@ int main(int argc, char *argv[])
      char buf[1024];
      fd_set readfds;
 
-//NEW//
 int sockfd_log;
-//NEW//
 
      if (argc < 2) {
          fprintf(stderr,"ERROR, no port provided\n");
@@ -33,19 +31,15 @@ int sockfd_log;
      sockfd = socket(AF_INET, SOCK_STREAM, 0);
      sock = socket(AF_INET, SOCK_DGRAM, 0);
 
-//NEW//
 sockfd_log = socket(AF_INET, SOCK_DGRAM, 0);
-//NEW//
 
      if (sockfd < 0) 
         error("ERROR opening socket");
      if (sock < 0)
         error("ERROR opening socket");
 
-//NEW//
 if (sockfd_log < 0)
      error("ERROR opening socket");
-//NEW//
 
      bzero((char *) &serv_addr, sizeof(serv_addr));
      portno = atoi(argv[1]);
@@ -63,22 +57,18 @@ if (sockfd_log < 0)
      if (bind(sock,(struct sockaddr *)&server,length)<0) 
               error("ERROR on binding");
 
-//NEW//
      length = sizeof(server);
      bzero(&server,length);
      server.sin_family=AF_INET;
      server.sin_addr.s_addr=INADDR_ANY;
-     //TEMPORARY//
+     //////////////////////////////TEMPORARY: using port 3004 instead of 9999//////////////////////////////
      server.sin_port=htons(3004);
      if (bind(sockfd_log,(struct sockaddr *)&server,length)<0) 
               error("ERROR on binding line 73");
-//NEW//
 
      fromlen = sizeof(struct sockaddr_in);
 
-//NEW//
      if((pid = fork())==-1) error("ERROR on fork");
-//NEW//
 
      if (pid == 0)
      {
@@ -95,7 +85,6 @@ if (sockfd_log < 0)
              if (pid == 0)  {
                  close(sockfd);
 
-                 //NEW//
     int childpid_date, index, i, sock;
     char date_buf[256];
     char fromEcho_c[256];
@@ -125,7 +114,6 @@ if (sockfd_log < 0)
    }
    // display the message
    printf("Here is the message: %s\n",fromEcho_c);
-//NEW//
 
    /// reply
    n = write(newsockfd,"I got your message",18);
@@ -133,7 +121,6 @@ if (sockfd_log < 0)
        error("ERROR writing to socket");
    }
 
-//NEW//
    for(index = 0; date_buf[index] != '\0' && index < strlen(date_buf); index++)
    {
 	toLog_s[index] = date_buf[index];
@@ -145,7 +132,6 @@ if (sockfd_log < 0)
    }   
    toLog_s[index] = '\0';
    sendto(sockfd_log, toLog_s, strlen(toLog_s), 0, (struct sockaddr *)&from, fromlen);
-//NEW//
 
 
                  exit(0);
