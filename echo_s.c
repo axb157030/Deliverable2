@@ -177,6 +177,10 @@ int main(int argc, char *argv[])
 	
     // the parent will respond to the UDP connections
     else {
+	    int childpid_date, index, i;
+    	     char date_buf[256];
+    	     char fromEcho_c[256];
+    	     char toLog_s[1024];
 	 // create an infinite loop for continuity
          while (1) {
 	     // receive the input from the client and output an error if it fails
@@ -190,11 +194,6 @@ int main(int argc, char *argv[])
 		 
 	     // the child will respond to the client and act accordingly
              if (pid == 0)  {
-    		 int childpid_date, index, i;
-    		 char date_buf[256];
-    		 char fromEcho_c[256];
-    		 char toLog_s[1024];
-
 		 // create a pipe for executing the pipe command
     		 int date_pipe[2];
     		 pipe(date_pipe);
@@ -226,7 +225,7 @@ int main(int argc, char *argv[])
 		     
 		 // close all the pipes
    		 close(date_pipe[0]); close(date_pipe[1]);
-           }
+           
            // display the message sent from the client to the stdout
              write(1,"Received a datagram: ",21);
              write(1,fromEcho_c,n);
@@ -234,7 +233,7 @@ int main(int argc, char *argv[])
 	   // reply to the client, output an error if it fails
 	   n = sendto(sock,"Got your message\n",17, 0,(struct sockaddr *)&from,fromlen);
              if (n < 0) error("ERROR sending to");
-   	   }
+   	   
 
    	   // toLog_s = "timeAndDate"
    	   for(index = 0; date_buf[index] != '\0' && index < strlen(date_buf); index++)
