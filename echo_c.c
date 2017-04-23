@@ -197,8 +197,8 @@ int main(int argc, char *argv[])
 	 
 	// receive the message from the user
     	printf("Please enter the message: ");
-    	bzero(buffer,256);
-    	fgets(buffer,255,stdin);
+    	bzero(message_buf,256);
+    	fgets(message_buf,255,stdin);
 	
 	// toEcho_s = "messageFromUser"
     	for(index = 0; message_buf[index] != '\0' && index < strlen(message_buf) && message_buf[index] != '\n'; index++)
