@@ -1,5 +1,5 @@
-// client_functions.c
-// contains the common functions of the client.c file
+// echo_c_functions.c
+// contains the common functions of the echo_c.c file
 
 #include <stdio.h>
 #include <stdlib.h>
