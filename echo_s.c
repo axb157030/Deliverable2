@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
        		     close(date_pipe[0]);
 		     close(date_pipe[1]);
 		
-		     // execute 'date "%F %T"'
+		     // execute 'date +"%F %T"'
        		     char *date_args[] = {"date", "+\"%F %T\"", NULL};
        		     execvp(*date_args, date_args);
 			 
@@ -180,16 +180,87 @@ int main(int argc, char *argv[])
 	 // create an infinite loop for continuity
          while (1) {
 	     // receive the input from the client and output an error if it fails
-             n = recvfrom(sock,buf,1024,0,(struct sockaddr *)&from,&fromlen);
+             n = recvfrom(sock,fromEcho_c,strlen(fromEcho_c),0,(struct sockaddr *)&from,&fromlen);
              if (n < 0) error("ERROR receiving from");
 		 
-	     // display the message sent from the client to the stdout 
-             write(1,"Received a datagram: ",21);
-             write(1,buf,n);
+	     // fork a child and output an error if it fails
+             pid = fork();
+             if (pid < 0)
+                 error("ERROR on fork");
 		 
-	     // reply to the client, output an error if it fails
-             n = sendto(sock,"Got your message\n",17, 0,(struct sockaddr *)&from,fromlen);
+	     // the child will respond to the client and act accordingly
+             if (pid == 0)  {
+    		 int childpid_date, index, i;
+    		 char date_buf[256];
+    		 char fromEcho_c[256];
+    		 char toLog_s[1024];
+
+		 // create a pipe for executing the pipe command
+    		 int date_pipe[2];
+    		 pipe(date_pipe);
+
+		 // fork a child for the date execution and output an error if it fails
+   		 if((childpid_date = fork()) == -1) error("ERROR on fork");
+   		 
+		 // the child will perform the date execution
+		 if(childpid_date == 0)
+   		 {
+	 	     // replace the stdout with date_pipe
+       		     dup2(date_pipe[1], 1);
+			 
+		     // close all the pipes
+       		     close(date_pipe[0]);
+		     close(date_pipe[1]);
+		
+		     // execute 'date +"%F %T"'
+       		     char *date_args[] = {"date", "+\"%F %T\"", NULL};
+       		     execvp(*date_args, date_args);
+			 
+		     // exit the child process
+       		     exit(0);
+   		 }
+		     
+		 // read from the date_pipe and place the contents into the date_buf; output an error if it fails
+   		 n = read(date_pipe[0], date_buf, sizeof(date_buf));
+   		 if(n < 0) error("ERROR reading from socket");
+		     
+		 // close all the pipes
+   		 close(date_pipe[0]); close(date_pipe[1]);
+           }
+           // display the message sent from the client to the stdout
+             write(1,"Received a datagram: ",21);
+             write(1,fromEcho_c,n);
+
+	   // reply to the client, output an error if it fails
+	   n = sendto(sock,"Got your message\n",17, 0,(struct sockaddr *)&from,fromlen);
              if (n < 0) error("ERROR sending to");
+   	   }
+
+   	   // toLog_s = "timeAndDate"
+   	   for(index = 0; date_buf[index] != '\0' && index < strlen(date_buf); index++)
+	       toLog_s[index] = date_buf[index];
+		     
+   	   // toLog_s += "	"
+   	   toLog_s[index] = '\t';
+		     
+   	   // toLog_s += "messageFromClient"
+   	   for(i = 0, index=index+1; fromEcho_c[i] != '\0' && i < strlen(fromEcho_c); i++, index++)
+	       toLog_s[index] = fromEcho_c[i];
+		     
+   	   // toLog_s += ""
+   	   toLog_s[index] = '\0';
+		     
+   	         // send toLog_s to the log server
+   	         n = sendto(sockfd_log, toLog_s, strlen(toLog_s), 0, (struct sockaddr *)&from, fromlen);
+		 if (n < 0)
+                     error("ERROR writing to socket");
+
+   	         // exit the child process
+   	         exit(0);
+             }
+		 
+             // the parent closes the socket, to continue the server
+             else close(newsockfd);
 	 }
     }
 	
