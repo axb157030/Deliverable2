@@ -76,8 +76,7 @@ int main(int argc, char *argv[])
      bzero(&server,length);
      server.sin_family=AF_INET;
      server.sin_addr.s_addr=INADDR_ANY;
-     //////////////////////////////TEMPORARY: using port 3004 instead of 9999//////////////////////////////
-     server.sin_port=htons(3004);
+     server.sin_port=htons(9999);
      if (bind(sockfd_log,(struct sockaddr *)&server,length)<0) 
               error("ERROR on binding line 73");
      fromlen = sizeof(struct sockaddr_in);
