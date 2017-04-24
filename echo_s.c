@@ -14,7 +14,8 @@
 
 int main(int argc, char *argv[])
 {
-     int sockfd, sock, sockfd_log, newsockfd, portno, length, n, pid;
+     int *sockfd, *sock,*newsockfd, portno, length, n, pid, noport, port, maxDescriptor;
+     maxDescriptor = -1;
      socklen_t clilen;
      struct sockaddr_in serv_addr, cli_addr;
      socklen_t fromlen;
@@ -29,18 +30,30 @@ int main(int argc, char *argv[])
          exit(1);
      }
 	
-     // make sockets for TCP client, UDP client, and the log server; print an error if it fails
-     sockfd = makeSocket(SOCK_STREAM);
-     sock = makeSocket(SOCK_DGRAM);
+     // make sockets for TCP clients, UDP clients, and the log server; print an error if it fails
+     //sockfd = makeSocket(SOCK_STREAM);
+     //sock = makeSocket(SOCK_DGRAM);
      sockfd_log = makeSocket(SOCK_DGRAM);
+	if(sockfd_log <0)
+		error("Error opening Socket");
+	
+	for(port = 0; port < noport; port++) {
+	noport = atoi(argv[port]);
+	sockfd[port] = socket(AF_INET, SOCK_STREAM, 0);
+        sock[port] = socket(AF_INET, SOCK_DGRAM, 0);
+     if (sockfd[port] < 0) 
+        error("ERROR opening socket");
+     if (sock[port] < 0)
+        error("ERROR opening socket");
+
 
      // bind the TCP socket and output an error if it fails
      bzero((char *) &serv_addr, sizeof(serv_addr));
-     portno = atoi(argv[1]);
+     portno = atoi(argv[port +2]);
      serv_addr.sin_family = AF_INET;
      serv_addr.sin_addr.s_addr = INADDR_ANY;
      serv_addr.sin_port = htons(portno);
-     if (bind(sockfd, (struct sockaddr *) &serv_addr,
+     if (bind(sockfd[port], (struct sockaddr *) &serv_addr,
               sizeof(serv_addr)) < 0) 
               error("ERROR on binding");
      length = sizeof(server);
@@ -52,6 +65,11 @@ int main(int argc, char *argv[])
      server.sin_port=htons(atoi(argv[1]));
      if (bind(sock,(struct sockaddr *)&server,length)<0) 
               error("ERROR on binding");
+		if(sockfd[port] > maxDescriptor)
+	maxDescriptor = sockfd[port];
+	if(sock[port] > maxDescriptor)
+	maxDescriptor = sock[port];
+	}
      length = sizeof(server);
 
      // bind the log server socket to port 9999 and output an error if it fails
@@ -71,14 +89,15 @@ int main(int argc, char *argv[])
      if (pid == 0)
      {
 	 // listen to the TCP socket
-         listen(sockfd,5);
+	      for(port = 0; port < noport; port++){
+         listen(sockfd[port],5);
          clilen = sizeof(cli_addr);
 
 	 // create an infinite loop for continuity
 	 while (1) {
              // accept the TCP socket and output an error if it fails
-             newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
-             if (newsockfd < 0) 
+             newsockfd[port] = accept(sockfd[port], (struct sockaddr *) &cli_addr, &clilen);
+             if (newsockfd[port] < 0) 
                  error("ERROR on accept");
              // fork a child and output an error if it fails
              pid = fork();
@@ -93,7 +112,7 @@ int main(int argc, char *argv[])
     		 char toLog_s[1024];
 		     
 		 // close the old socket
-                 close(sockfd);
+                 close(sockfd[port]);
 
 		 // create a pipe for executing the pipe command
     		 int date_pipe[2];
@@ -129,7 +148,7 @@ int main(int argc, char *argv[])
 
    		 // read from client, output an error if it fails
    		 bzero(fromEcho_c,256);
-   		 n = read(newsockfd,fromEcho_c,255);
+   		 n = read(newsockfd[port],fromEcho_c,255);
    		 if (n < 0){
       		     error("ERROR reading from socket");
            }
@@ -137,7 +156,7 @@ int main(int argc, char *argv[])
            printf("Here is the message: %s\n",fromEcho_c);
 
 	   // reply to the client, output an error if it fails
-	   n = write(newsockfd,fromEcho_c,18);
+	   n = write(newsockfd[port],fromEcho_c,18);
    	   if (n < 0){
                error("ERROR writing to socket");
    	   }
@@ -167,11 +186,12 @@ int main(int argc, char *argv[])
              }
 		 
              // the parent closes the socket; to continue the server
-             else close(newsockfd);
+             else close(newsockfd[port]);
 	 } /* end of while */
 	     
 	 // close the socket
-         close(sockfd);
+         close(sockfd[port]);
+	      }
          return 0; /* we never get here */
     }
 	
@@ -185,7 +205,8 @@ int main(int argc, char *argv[])
          while (1) {
 	     // receive the input from the client and output an error if it fails
    		 bzero(fromEcho_c,256);
-             n = recvfrom(sock,fromEcho_c,256,0,(struct sockaddr *)&from,&fromlen);
+		 for(port = 0; port < noport; port++){
+             n = recvfrom(sock[port],fromEcho_c,256,0,(struct sockaddr *)&from,&fromlen);
              if (n < 0) error("ERROR receiving from");
 		 
 	     // fork a child and output an error if it fails
@@ -232,7 +253,7 @@ int main(int argc, char *argv[])
            printf("Here is the message: %s\n",fromEcho_c);
 
 	   // reply to the client, output an error if it fails
-	   n = sendto(sock,fromEcho_c,17, 0,(struct sockaddr *)&from,fromlen);
+	   n = sendto(sock[port],fromEcho_c,17, 0,(struct sockaddr *)&from,fromlen);
              if (n < 0) error("ERROR sending to");
    	   
 
@@ -254,10 +275,10 @@ int main(int argc, char *argv[])
    	         n = sendto(sockfd_log, toLog_s, strlen(toLog_s), 0, (struct sockaddr *)&from, fromlen);
 		 if (n < 0)
                      error("ERROR writing to socket LOG");
-
+	     }
    	         // exit the child process
    	         exit(0);
-             }
+	     }
 	 }
     }
 	
