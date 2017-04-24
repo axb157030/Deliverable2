@@ -14,7 +14,7 @@
 
 int main(int argc, char *argv[])
 {
-     int *sockfd, *sock,*newsockfd, portno, length, n, pid, noport, port, maxDescriptor;
+     int *sockfd, *sock,*newsockfd,sockfd_log, portno, length, n, pid, noport, port, maxDescriptor;
      maxDescriptor = -1;
      socklen_t clilen;
      struct sockaddr_in serv_addr, cli_addr;
