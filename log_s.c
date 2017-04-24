@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
      	}
 
 	//Socket Creation
-     	makeSocket(sock);
+     	sock = makeSocket();
 	
 	//Getting Host Address
 	server.sin_family = AF_INET;
@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 			error("Error on fork");
 		if(pid == 0)
 		{
-			fileWrite();
+			fileWrite(buf);
 			exit(0);
 		}
      	}
