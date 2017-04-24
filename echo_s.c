@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
            printf("Here is the message: %s\n",fromEcho_c);
 
 	   // reply to the client, output an error if it fails
-	   n = write(newsockfd,"I got your message",18);
+	   n = write(newsockfd,fromEcho_c,18);
    	   if (n < 0){
                error("ERROR writing to socket");
    	   }
@@ -232,7 +232,7 @@ int main(int argc, char *argv[])
            printf("Here is the message: %s\n",fromEcho_c);
 
 	   // reply to the client, output an error if it fails
-	   n = sendto(sock,"Got your message\n",17, 0,(struct sockaddr *)&from,fromlen);
+	   n = sendto(sock,fromEcho_c,17, 0,(struct sockaddr *)&from,fromlen);
              if (n < 0) error("ERROR sending to");
    	   
 
