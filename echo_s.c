@@ -25,8 +25,8 @@ int main(int argc, char *argv[])
      fd_set readfds;
 	
      // if no port is provided, print an error
-     if (argc < 2) {
-         fprintf(stderr,"ERROR, no port provided\n");
+     if (argc < 2 || argc > 5) {
+         fprintf(stderr,"ERROR, no port or too many ports provided\n");
          exit(1);
      }
 	
