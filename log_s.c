@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
      	}
 
 	//Socket Creation
-     	makeSocket();
+     	makeSocket(sock);
 	
 	//Getting Host Address
 	server.sin_family = AF_INET;
