@@ -54,7 +54,13 @@ int main(int argc, char *argv[])
          	if (n < 0){
 	 		error("ERROR receiving from");
 	 	}
-		fileWrite();	
+		pid = fork();
+		if(pid <0)
+			error("Error on fork");
+		if(pid == 0)
+		{
+			fileWrite();
+		}
      	}
 	
      // close all sockets
