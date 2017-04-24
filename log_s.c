@@ -29,13 +29,8 @@ int main(int argc, char *argv[])
      	}
 
 	//Socket Creation
-     	sock = socket(AF_INET, SOCK_DGRAM, 0);
-
-	//Socket Validation
-     	if (sock < 0){
-		error("ERROR opening socket");
-	}
-
+     	makeSocket();
+	
 	//Getting Host Address
 	server.sin_family = AF_INET;
 	hp = gethostbyname(argv[1]);
@@ -59,25 +54,9 @@ int main(int argc, char *argv[])
          	if (n < 0){
 	 		error("ERROR receiving from");
 	 	}
-	     	
-		//If "echo.log" exists then appeand new log to the end of the file
-		if (file = fopen("echo.log", "r")){  
-			FILE *fPointer;
-			fPointer = fopen("echo.log", "a");
-			fprintf(fPointer, "\n"); 
-			fprintf(fPointer, "%s", buf);
-	 	}
-	     
-		//If "echo.log" does not exist then create a new file called "echo.log" and write in the log
-	 	else{
-			FILE *fPointer;
-			fPointer = fopen("echo.log", "w"); 
-			fprintf(fPointer, "%s", buf);
-	 	}
 		
-		//Close pointer
-	 	getch();
-	 	fclose(fPointer);
+		fileWrite();
+		
      	}
 	
      // close all sockets
