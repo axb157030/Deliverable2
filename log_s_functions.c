@@ -18,15 +18,17 @@ void error(const char *msg)
 }
 
 //Function for making a socket
-void makeSocket(int sock)
+int makeSocket()
 {
    //Socket Creation
+   int sock;
    sock = socket(AF_INET, SOCK_DGRAM, 0);
 
 	//Socket Validation
   if (sock < 0){
     error("ERROR opening socket");
 	}
+   return sock;
 }
 
 void fileWrite(char *buf){
