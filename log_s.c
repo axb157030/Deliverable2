@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
 	
 	bcopy((char *)hp->h_addr, (char *)&server.sin_addr, hp->h_length);
 	
-   	server.sin_port = htons(3004);
+   	server.sin_port = htons(9999);
    	length=sizeof(struct sockaddr_in);
 	fromlen = sizeof(struct sockaddr_in);
 
