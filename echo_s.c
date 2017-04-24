@@ -258,9 +258,6 @@ int main(int argc, char *argv[])
    	         // exit the child process
    	         exit(0);
              }
-		 
-             // the parent closes the socket, to continue the server
-             else close(newsockfd);
 	 }
     }
 	
