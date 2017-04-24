@@ -18,7 +18,7 @@ void error(const char *msg)
 }
 
 //Function for making a socket
-void makeSocket()
+void makeSocket(int sock)
 {
    //Socket Creation
    sock = socket(AF_INET, SOCK_DGRAM, 0);
@@ -29,10 +29,10 @@ void makeSocket()
 	}
 }
 
-void fileWrite(){
+void fileWrite(char *buf){
  		//If "echo.log" exists then appeand new log to the end of the file
- 		if (file = fopen("echo.log", "r")){  
- 			FILE *fPointer;
+		FILE *fPointer;
+ 		if (fPointer = fopen("echo.log", "r")){  
  			fPointer = fopen("echo.log", "a");
  			fprintf(fPointer, "\n"); 
   		fprintf(fPointer, "%s", buf);
@@ -40,7 +40,6 @@ void fileWrite(){
  	     
  		//If "echo.log" does not exist then create a new file called "echo.log" and write in the log
  	 	else{
- 			FILE *fPointer;
  			fPointer = fopen("echo.log", "w"); 
  			fprintf(fPointer, "%s", buf);
  	 	}
