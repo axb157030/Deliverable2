@@ -4,7 +4,7 @@
 void error(const char *);
 
 //Prototype for making socket
-void makeSocket();
+void makeSocket(int);
 
 //Prototype for writing to file
-void fileWrite();
+void fileWrite(char *);
