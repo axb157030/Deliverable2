@@ -75,7 +75,8 @@ int main(int argc, char *argv[])
      // bind the log server socket to port 9999 and output an error if it fails
      bzero(&server,length);
      server.sin_family=AF_INET;
-     server.sin_addr.s_addr=INADDR_ANY;
+     //Passes the second argument as the logip
+     server.sin_addr.s_addr=($2);
      server.sin_port=htons(9999);
      if (bind(sockfd_log,(struct sockaddr *)&server,length)<0) 
               error("ERROR on binding line 73");
@@ -103,17 +104,6 @@ int main(int argc, char *argv[])
              if (pid < 0)
                  error("ERROR on fork");
 		 
-	     // the child will respond to the client and act accordingly
-             if (pid == 0)  {
-    		 int childpid_date, index, i, sock;
-    		 char date_buf[256];
-    		 char fromEcho_c[256];
-    		 char toLog_s[1024];
-		     
-		 // close the old socket
-                 close(sockfd[port]);
-
-		 // create a pipe for executing the pipe command
     		 int date_pipe[2];
     		 pipe(date_pipe);
 
@@ -213,6 +203,17 @@ int main(int argc, char *argv[])
              if (pid < 0)
                  error("ERROR on fork");
 		 
+	     // the child will respond to the client and act accordingly
+             if (pid == 0)  {
+	     // the child will respond to the client and act accordingly
+	     // the child will respond to the client and act accordingly
+             if (pid == 0)  {
+
+		 // create a pipe for executing the pipe command
+    		 int date_pipe[2];
+    		 pipe(date_pipe);
+
+		 // fork a child for the date execution and output an error if it fails
 	     // the child will respond to the client and act accordingly
              if (pid == 0)  {
 
