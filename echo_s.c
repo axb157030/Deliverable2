@@ -1,4 +1,4 @@
-// echo_s.c
+ // echo_s.c
 // a server in the internet domain
 // the hostname port and at least 1, but up to 3 port numbers are passed as arguments
 #include <stdio.h>
@@ -6,29 +6,28 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h> 
-#include <sys/socket.h>
-#include <netinet/in.h>
+f/#include <sys/socket.h>
+#include <netinet/in.h>a
 #include <netdb.h>
 #include <arpa/inet.h>
 #include "echo_s_functions.h"
 
-int main(int argc, char *argv[])
+aint main(int argc, char *argv[])
 {
      int *sockfd, *sock,*newsockfd,sockfd_log, portno, length, n, pid, noport, port, maxDescriptor;
-     maxDescriptor = -1;
-     socklen_t clilen;
-     struct sockaddr_in serv_addr, cli_addr;
+      maxDescriptor = -1;
+    socklen_t clilen;
+   struct sockaddr_in serv_addr, cli_addr;
      socklen_t fromlen;
-     struct sockaddr_in server;
+     struct sockaddr_in server; // The purpose of server and from
      struct sockaddr_in from;
-     char buf[1024];
-     fd_set readfds;
+     char buf[1024]
+    fd_set readfds;
 	
      // if no port is provided, print an error
      if (argc < 2 || argc > 5) {
-         fprintf(stderr,"ERROR, no port or too many ports provided\n");
-         exit(1);
-     }
+        fprintf(stderr,"ERROR, no port or too many ports provided\n");
+         exit(1);     } 
 	
      // make sockets for TCP clients, UDP clients, and the log server; print an error if it fails
      //sockfd = makeSocket(SOCK_STREAM);
@@ -36,21 +35,19 @@ int main(int argc, char *argv[])
      sockfd_log = makeSocket(SOCK_DGRAM);
 	if(sockfd_log <0)
 		error("Error opening Socket");
-	
-	for(port = 0; port < noport; port++) {
-	noport = atoi(argv[port]);
-	sockfd[port] = socket(AF_INET, SOCK_STREAM, 0);
-        sock[port] = socket(AF_INET, SOCK_DGRAM, 0);
-     if (sockfd[port] < 0) 
-        error("ERROR opening socket");
-     if (sock[port] < 0)
+		for(port = 0; port < noport; port++) { // How can thos work noport isn't even assigned an integer before this statement?
+	noport = atoi(argv[port]); // No port may be assigned a string. argv[0] is a string
+	sockfd[port] = socket(AF_INET, SOCK_STREAM, 0); // Why have this for loop and make so many sockets. It seems like it would
+        sock[port] = socket(AF_INET, SOCK_DGRAM, 0);    // cause a lot of errors
+     if (sockfd[port] < 0)
+        error("ERROR opening socket");     if (sock[port] < 0)
         error("ERROR opening socket");
 
 
      // bind the TCP socket and output an error if it fails
      bzero((char *) &serv_addr, sizeof(serv_addr));
-     portno = atoi(argv[port +2]);
-     serv_addr.sin_family = AF_INET;
+     portno = atoi(argv[port +2]); // Why add 2 to the port number. It should be the same as the argument that was passed in to be thr
+     serv_addr.sin_family = AF_INET; // port number
      serv_addr.sin_addr.s_addr = INADDR_ANY;
      serv_addr.sin_port = htons(portno);
      if (bind(sockfd[port], (struct sockaddr *) &serv_addr,
@@ -59,10 +56,10 @@ int main(int argc, char *argv[])
      length = sizeof(server);
     
      // bind the UDP socket and output an error if it fails
-     bzero(&server,length);
-     server.sin_family=AF_INET;
+     bzero(&server,length); // so server is the pointer to the buffer. But why do we have multiple pointers to the same buffer
+     server.sin_family=AF_INET; // Do we have multiple buffers? We only seem to have 1 buffer
      server.sin_addr.s_addr=INADDR_ANY;
-     server.sin_port=htons(atoi(argv[1]));
+     server.sin_port=htons(atoi(argv[1])); 
      if (bind(sock,(struct sockaddr *)&server,length)<0) 
               error("ERROR on binding");
 		if(sockfd[port] > maxDescriptor)
@@ -73,10 +70,10 @@ int main(int argc, char *argv[])
      length = sizeof(server);
 
      // bind the log server socket to port 9999 and output an error if it fails
-     bzero(&server,length);
+     bzero(&server,length); 
      server.sin_family=AF_INET;
      //Passes the second argument as the logip
-     server.sin_addr.s_addr=($2);
+     server.sin_addr.s_addr=($2); 
      server.sin_port=htons(9999);
      if (bind(sockfd_log,(struct sockaddr *)&server,length)<0) 
               error("ERROR on binding line 73");
@@ -109,7 +106,7 @@ int main(int argc, char *argv[])
     		 int childpid_date, index, i, sock;
     		 char date_buf[256];
     		 char fromEcho_c[256];
-    		 char toLog_s[1024];
+    		 char toLog_s[1024];a
 		     
 		 // close the old socket
                  close(sockfd[port]);
