@@ -104,6 +104,17 @@ int main(int argc, char *argv[])
              if (pid < 0)
                  error("ERROR on fork");
 		 
+	     // the child will respond to the client and act accordingly
+             if (pid == 0)  {
+    		 int childpid_date, index, i, sock;
+    		 char date_buf[256];
+    		 char fromEcho_c[256];
+    		 char toLog_s[1024];
+		     
+		 // close the old socket
+                 close(sockfd[port]);
+
+		 // create a pipe for executing the pipe command
     		 int date_pipe[2];
     		 pipe(date_pipe);
 
@@ -203,17 +214,6 @@ int main(int argc, char *argv[])
              if (pid < 0)
                  error("ERROR on fork");
 		 
-	     // the child will respond to the client and act accordingly
-             if (pid == 0)  {
-	     // the child will respond to the client and act accordingly
-	     // the child will respond to the client and act accordingly
-             if (pid == 0)  {
-
-		 // create a pipe for executing the pipe command
-    		 int date_pipe[2];
-    		 pipe(date_pipe);
-
-		 // fork a child for the date execution and output an error if it fails
 	     // the child will respond to the client and act accordingly
              if (pid == 0)  {
 
