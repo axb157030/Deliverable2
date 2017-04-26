@@ -76,8 +76,12 @@ int main(int argc, char *argv[])
      bzero(&server,length);
      server.sin_family=AF_INET;
      //Passes the second argument as the logip
-     server.sin_addr.s_addr=($2);
-     server.sin_port=htons(9999);
+    // server.sin_addr.s_addr=($2);
+     //server.sin_port=htons(9999);
+	int portnoU2; // = 8888  My change
+     portnoU2 = atoi($3);
+     server.sin_port=htons(portnoU2); // My change
+
      if (bind(sockfd_log,(struct sockaddr *)&server,length)<0) 
               error("ERROR on binding line 73");
      fromlen = sizeof(struct sockaddr_in);
